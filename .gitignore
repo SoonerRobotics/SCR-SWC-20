@@ -1,0 +1,10 @@
+# Ignore build directories
+devel/
+build/
+
+# Ignore dev directories
+.vscode/
+.idea/
+
+# Ignore temp files from assorted programs
+*~
