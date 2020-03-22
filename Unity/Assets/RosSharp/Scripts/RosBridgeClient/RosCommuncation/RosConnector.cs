@@ -36,10 +36,8 @@ namespace RosSharp.RosBridgeClient
 
         public void Start()
         {
-            if (instance)
-                return;
-
             instance = this;
+
             RosSocket = ConnectToRos(Protocol, RosBridgeServerUrl, OnConnected, OnClosed, Serializer);
             Connect();
         }
@@ -58,10 +56,24 @@ namespace RosSharp.RosBridgeClient
             return new RosSocket(protocol, serializer);
         }
 
-        private void OnApplicationQuit()
+        public void Close()
         {
             closed = true;
-            RosSocket.Close();
+            if (RosSocket != null)
+            {
+                RosSocket.protocol.OnClosed -= OnClosed;
+                RosSocket.Close();
+            }
+        }
+
+        private void OnApplicationQuit()
+        {
+            Close();
+        }
+
+        private void OnDestroy()
+        {
+            Close();
         }
 
         private void OnConnected(object sender, EventArgs e)
@@ -73,8 +85,9 @@ namespace RosSharp.RosBridgeClient
         private void OnClosed(object sender, EventArgs e)
         {
             Connected = false;
+            Debug.Log("Disconnected from RosBridge: " + RosBridgeServerUrl + ", closed: " + closed);
+
             if (!closed) {
-                Debug.Log("Disconnected from RosBridge: " + RosBridgeServerUrl);
                 Connect();
             }
         }
