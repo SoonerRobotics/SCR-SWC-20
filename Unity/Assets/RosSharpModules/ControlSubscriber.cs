@@ -9,6 +9,9 @@ namespace RosSharp.RosBridgeClient.MessageTypes.swc_msgs
     {
         private AckermannController car;
 
+        private bool firstMessage = true;
+        private bool begingame = false;
+
         protected override void Start()
         {
             if (ConfigLoader.configs.ManualControl)
@@ -18,10 +21,25 @@ namespace RosSharp.RosBridgeClient.MessageTypes.swc_msgs
             car = GetComponent<AckermannController>();
         }
 
+        private void Update()
+        {
+            if (begingame)
+            {
+                GameManager.instance.StartSim();
+                begingame = false;
+            }
+        }
+
         protected override void ReceiveMessage(Control control)
         {
             car.CntrlAngle = control.turn_angle;
             car.CntrlPower = control.speed;
+
+            if (firstMessage)
+            {
+                begingame = true;
+                firstMessage = false;
+            }
         }
     }
 }
