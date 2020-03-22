@@ -17,7 +17,6 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    [RequireComponent(typeof(RosConnector))]
     public abstract class UnityPublisher<T> : MonoBehaviour where T : Message
     {
         public string Topic;
@@ -27,7 +26,7 @@ namespace RosSharp.RosBridgeClient
 
         protected virtual void Start()
         {
-            rosConnector = GetComponent<RosConnector>();
+            rosConnector = RosConnector.instance;
             publicationId = rosConnector.RosSocket.Advertise<T>(Topic);
         }
 

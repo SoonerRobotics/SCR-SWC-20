@@ -15,9 +15,14 @@ public class AckermannController : MonoBehaviour
     public GameObject leftWheel;
     public GameObject rightWheel;
 
-    public float drag = 0.15f;
+    [Range(0.0F, 1.0F)]
+    public float drag = 0.85f;
+
     public float L = 0.7f;
     public float T = 0.6f;
+
+    [Range(0.0F, 10.0F)]
+    public float ManualTopSpeed = 1.0f;
 
     public float Angle { get; private set; }
     public float Power { get; private set; }
@@ -31,29 +36,34 @@ public class AckermannController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        ManualTopSpeed = ConfigLoader.configs.ManualTopSpeed;
     }
 
     // Update is called once per frame
     void Update()
     {
-        // CntrlPower = Input.GetAxis("Fire1");
-        // CntrlAngle = Input.GetAxis("Horizontal") * 30;
+        if (!ConfigLoader.configs.ManualControl)
+            return;
+
+        CntrlPower = Input.GetAxis("Speed") * ManualTopSpeed;
+        CntrlAngle = Input.GetAxis("Angle") * 30;
     }
 
     private void FixedUpdate()
     {
-        Angle = (1 - drag) * CntrlAngle + drag * Angle;
-        Power = (1 - drag) * CntrlPower + drag * Power;
+        Angle += (1.0f - drag) * (CntrlAngle - Angle);
+        Power += (1.0f - drag) * (CntrlPower - Power);
 
-        Angle = Mathf.Clamp(Angle, -30, 30) * Mathf.Deg2Rad;
+        Angle = Mathf.Clamp(Angle, -30, 30);
+
+        float radAngle = Angle * Mathf.Deg2Rad;
 
         float leftAngle = 0;
         float rightAngle = 0;
 
-        if (Mathf.Abs(Angle) > 0.1f)
+        if (Mathf.Abs(radAngle) > 0.1f)
         {
-            Radius = L / Mathf.Tan(Angle);
+            Radius = L / Mathf.Tan(radAngle);
 
             leftAngle = Mathf.Atan2(L, Radius - T / 2);
             rightAngle = Mathf.Atan2(L, Radius + T / 2);
@@ -65,7 +75,7 @@ public class AckermannController : MonoBehaviour
 
         float heading = -this.transform.rotation.eulerAngles.y * Mathf.Deg2Rad;
 
-        this.transform.Translate(new Vector3(CntrlPower * Mathf.Cos(heading), 0, CntrlPower * Mathf.Sin(heading)) * Time.fixedDeltaTime, Space.World);
-        this.transform.Rotate(new Vector3(0, CntrlPower / L * Mathf.Tan(Angle), 0) * Mathf.Rad2Deg * Time.fixedDeltaTime, Space.World);
+        this.transform.Translate(new Vector3(Power * Mathf.Cos(heading), 0, Power * Mathf.Sin(heading)) * Time.fixedDeltaTime, Space.World);
+        this.transform.Rotate(new Vector3(0, Power / L * Mathf.Tan(radAngle), 0) * Mathf.Rad2Deg * Time.fixedDeltaTime, Space.World);
     }
 }

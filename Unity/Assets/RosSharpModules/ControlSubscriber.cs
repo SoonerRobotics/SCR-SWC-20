@@ -11,6 +11,9 @@ namespace RosSharp.RosBridgeClient.MessageTypes.swc_msgs
 
         protected override void Start()
         {
+            if (ConfigLoader.configs.ManualControl)
+                return;
+
             base.Start();
             car = GetComponent<AckermannController>();
         }
