@@ -31,18 +31,22 @@ public class AckermannController : MonoBehaviour
     public float CntrlAngle = 0;
     public float CntrlPower = 0;
 
+    public Vector3 linear_vel { get; private set; } = new Vector3();
+    public Vector3 angular_vel { get; private set; } = new Vector3();
+    public Vector3 accel { get; private set; } = new Vector3();
+
     private float Radius;
 
     // Start is called before the first frame update
     void Start()
     {
-        ManualTopSpeed = ConfigLoader.configs.ManualTopSpeed;
+        ManualTopSpeed = ConfigLoader.simulator.ManualTopSpeed;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!ConfigLoader.configs.ManualControl)
+        if (!ConfigLoader.simulator.ManualControl)
             return;
 
         CntrlPower = Input.GetAxis("Speed") * ManualTopSpeed;
@@ -55,6 +59,7 @@ public class AckermannController : MonoBehaviour
         Power += (1.0f - drag) * (CntrlPower - Power);
 
         Angle = Mathf.Clamp(Angle, -30, 30);
+        Power = Mathf.Clamp(Power, -8, 8);
 
         float radAngle = Angle * Mathf.Deg2Rad;
 
@@ -75,7 +80,13 @@ public class AckermannController : MonoBehaviour
 
         float heading = -this.transform.rotation.eulerAngles.y * Mathf.Deg2Rad;
 
-        this.transform.Translate(new Vector3(Power * Mathf.Cos(heading), 0, Power * Mathf.Sin(heading)) * Time.fixedDeltaTime, Space.World);
-        this.transform.Rotate(new Vector3(0, Power / L * Mathf.Tan(radAngle), 0) * Mathf.Rad2Deg * Time.fixedDeltaTime, Space.World);
+        Vector3 new_linear_vel = new Vector3(Power * Mathf.Cos(heading), 0, Power * Mathf.Sin(heading));
+        accel = (new_linear_vel - linear_vel) / Time.fixedDeltaTime;
+
+        linear_vel = new_linear_vel;
+        transform.Translate(linear_vel * Time.fixedDeltaTime, Space.World);
+
+        angular_vel = new Vector3(0, Power / L * Mathf.Tan(radAngle), 0);
+        transform.Rotate(angular_vel * Mathf.Rad2Deg * Time.fixedDeltaTime, Space.World);
     }
 }

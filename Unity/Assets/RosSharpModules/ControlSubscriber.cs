@@ -14,7 +14,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.swc_msgs
 
         protected override void Start()
         {
-            if (ConfigLoader.configs.ManualControl)
+            if (ConfigLoader.simulator.ManualControl)
                 return;
 
             base.Start();

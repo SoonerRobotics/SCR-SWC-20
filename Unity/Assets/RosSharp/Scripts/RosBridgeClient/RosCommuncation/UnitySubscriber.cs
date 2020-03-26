@@ -27,7 +27,8 @@ namespace RosSharp.RosBridgeClient
         protected virtual void Start()
         {
             rosConnector = RosConnector.instance;
-            rosConnector.RosSocket.Subscribe<T>(Topic, ReceiveMessage, (int)(TimeStep * 1000));
+            if (rosConnector)
+                rosConnector.RosSocket.Subscribe<T>(Topic, ReceiveMessage, (int)(TimeStep * 1000));
         }
 
         protected abstract void ReceiveMessage(T message);

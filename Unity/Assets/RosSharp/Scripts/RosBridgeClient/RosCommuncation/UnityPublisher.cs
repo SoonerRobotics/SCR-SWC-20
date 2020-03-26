@@ -27,7 +27,8 @@ namespace RosSharp.RosBridgeClient
         protected virtual void Start()
         {
             rosConnector = RosConnector.instance;
-            publicationId = rosConnector.RosSocket.Advertise<T>(Topic);
+            if (rosConnector)
+                publicationId = rosConnector.RosSocket.Advertise<T>(Topic);
         }
 
         protected void Publish(T message)

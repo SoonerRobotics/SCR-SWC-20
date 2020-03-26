@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour
 
         // Get rosConnector
         rosConnector = GetComponent<RosConnector>();
-        rosConnector.RosBridgeServerUrl = ConfigLoader.configs.RosBridgeServerUrl;
+        rosConnector.RosBridgeServerUrl = ConfigLoader.simulator.RosBridgeServerUrl;
         rosConnector.enabled = true;
 
         waypoints.Add(new Vector2(1, 0));
