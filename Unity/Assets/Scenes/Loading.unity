@@ -204,7 +204,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 477782514}
-        m_MethodName: RestartSim
+        m_MethodName: ReloadSim
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

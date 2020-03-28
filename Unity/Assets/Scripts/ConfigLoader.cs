@@ -1,11 +1,7 @@
-﻿using RosSharp.RosBridgeClient;
-using SharpConfig;
+﻿using SharpConfig;
 using System;
 using System.IO;
-using System.Linq;
 using TMPro;
-using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class ConfigLoader
 {
@@ -37,10 +33,16 @@ public class ConfigLoader
             simulator.EnableCamera = cfg["Simulator"]["EnableCamera"].BoolValue;
             simulator.ManualTopSpeed = cfg["Simulator"]["ManualTopSpeed"].FloatValue;
             simulator.RosBridgeServerUrl = cfg["Simulator"]["RosBridgeUrl"].StringValue;
+            simulator.CompetitionMode = cfg["Simulator"]["CompetitionMode"].BoolValue;
         }
         catch (Exception e)
         {
             throw new ConfigLoadException("Error in simulator.cfg:\n" + e.Message + "\n\nPlease fix and reload.");
+        }
+
+        // Competition mode overwrites
+        if (simulator.CompetitionMode) {
+            simulator.ManualControl = false;
         }
 
         // Load competition.cfg
@@ -88,6 +90,7 @@ public class ConfigLoader
         public float ManualTopSpeed = 1.0f;
         public bool EnableCamera = false;
         public string RosBridgeServerUrl = "ws://localhost:9090";
+        public bool CompetitionMode = false;
     }
 
     public class CompetitionConfig

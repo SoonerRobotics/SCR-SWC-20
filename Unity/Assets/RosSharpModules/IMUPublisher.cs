@@ -13,8 +13,8 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 
         private AckermannController c;
 
-        public float previousScanTime = 0;
-        private float updateRate = 0;
+        private float previousScanTime = 0;
+        public float updatePeriod = 0.1f;
 
         protected override void Start()
         {
@@ -38,7 +38,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 
         private void FixedUpdate()
         {
-            if (Time.realtimeSinceStartup >= previousScanTime + updateRate)
+            if (Time.realtimeSinceStartup >= previousScanTime + updatePeriod)
             {
                 WriteMessage();
                 previousScanTime = Time.realtimeSinceStartup;

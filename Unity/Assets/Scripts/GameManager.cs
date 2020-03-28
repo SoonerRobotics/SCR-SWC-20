@@ -59,7 +59,9 @@ public class GameManager : MonoBehaviour
         rosConnector.RosBridgeServerUrl = ConfigLoader.simulator.RosBridgeServerUrl;
         rosConnector.enabled = true;
 
-        waypoints.Add(new Vector2(1, 0));
+        waypoints.Add(new Vector2(0, -37));
+        waypoints.Add(new Vector2(15, 0));
+        waypoints.Add(new Vector2(0, 37));
 
         loadingText.text = "Waiting for Ros Bridge at '" + rosConnector.RosBridgeServerUrl + "'...";
 
@@ -72,7 +74,11 @@ public class GameManager : MonoBehaviour
         
         if (State == GameState.PLAYING && !rosConnector.Connected)
         {
-            RestartSim();
+            if (ConfigLoader.simulator.CompetitionMode) {
+                StopSim("Connection to RosBridge lost!");
+            } else {
+                ReloadSim();
+            }
         }
 
         if (State == GameState.WAITING_FOR_ROS && rosConnector.Connected)
@@ -82,34 +88,54 @@ public class GameManager : MonoBehaviour
         }
 
         // Time limit reached
-        if (State == GameState.PLAYING && Time.time - startTime >= maxTime)
+        if (State == GameState.PLAYING && ConfigLoader.simulator.CompetitionMode && Time.time - startTime >= maxTime)
         {
-            StopSim();
+            StopSim(null);
         }
+    }
+
+    public Vector2[] GetWaypoints() {
+        return waypoints.ToArray();
     }
 
     public void ReachWaypoint(int index)
     {
-        if (index == waypoints.Count - 1)
+        if (index == waypoints.Count - 1 && ConfigLoader.simulator.CompetitionMode)
         {
-            StopSim();
+            StopSim(null);
             return;
         }
     }
 
-    public void RestartSim()
+    // Reload the sim completely, including configs and reconnect
+    public void ReloadSim()
     {
-        SceneManager.LoadScene(0);
         State = GameState.INIT;
+        SceneManager.LoadScene(0);
+        adjustments = new List<ScoreAdjust>();
     }
 
-    public void StopSim()
+    // Restart the sim, basically just resetting the level
+    public void RestartSim()
+    {
+        State = GameState.PLAYING;
+        SceneManager.LoadScene(1);
+        adjustments = new List<ScoreAdjust>();
+    }
+
+    public void StopSim(string error)
     {
         float finalTime = Time.time - startTime;
 
         Debug.Log("Job's done!");
 
         StreamWriter writer = new StreamWriter("results.txt");
+
+        if (error != null) {
+            writer.WriteLine("Error: " + error);
+            writer.Close();
+            Application.Quit();
+        }
 
         writer.WriteLine(finalTime);
 
