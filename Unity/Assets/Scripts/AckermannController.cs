@@ -63,22 +63,16 @@ public class AckermannController : MonoBehaviour
 
         float radAngle = Angle * Mathf.Deg2Rad;
 
+        float heading = -this.transform.rotation.eulerAngles.y * Mathf.Deg2Rad;
+
         float leftAngle = 0;
         float rightAngle = 0;
 
-        if (Mathf.Abs(radAngle) > 0.1f)
-        {
-            Radius = L / Mathf.Tan(radAngle);
-
-            leftAngle = Mathf.Atan2(L, Radius - T / 2);
-            rightAngle = Mathf.Atan2(L, Radius + T / 2);
-
-        }
+        leftAngle = Mathf.Atan2(2 * L * Mathf.Sin(radAngle), 2 * L * Mathf.Cos(radAngle) - T * Mathf.Sin(radAngle));
+        rightAngle = Mathf.Atan2(2 * L * Mathf.Sin(radAngle), 2 * L * Mathf.Cos(radAngle) + T * Mathf.Sin(radAngle));
 
         leftWheel.transform.localRotation = Quaternion.Euler(new Vector3(90, leftAngle * Mathf.Rad2Deg, 0));
         rightWheel.transform.localRotation = Quaternion.Euler(new Vector3(90, rightAngle * Mathf.Rad2Deg, 0));
-
-        float heading = -this.transform.rotation.eulerAngles.y * Mathf.Deg2Rad;
 
         Vector3 new_linear_vel = new Vector3(Power * Mathf.Cos(heading), 0, Power * Mathf.Sin(heading));
         accel = (new_linear_vel - linear_vel) / Time.fixedDeltaTime;
