@@ -100,11 +100,14 @@ public class FieldBuilder : MonoBehaviour
             frontier.Remove(cell);
         }
 
+        Debug.Log("width: " + width + ", height: " + height);
+
         foreach (Vector2 waypoint in waypoints) {
+            (int, int) wpt = waypointToTuple(waypoint);
+            Debug.Log(wpt);
             for (int i=-freeArea; i<=freeArea; i++) {
                 for (int j=-freeArea; j<=freeArea; j++) {
-                    (int, int) wpt = waypointToTuple(waypoint);
-                    if (wpt.Item1 + i >= 0 && wpt.Item1 + i < width && wpt.Item1 + j >= 0 && wpt.Item1 + j <= height)
+                    if (wpt.Item1 + i >= 0 && wpt.Item1 + i < width && wpt.Item2 + j >= 0 && wpt.Item2 + j <= height)
                         maze[wpt.Item1 + i, wpt.Item2 + j] = true;
                 }
             }

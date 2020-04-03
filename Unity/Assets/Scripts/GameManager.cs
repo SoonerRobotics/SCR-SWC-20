@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     public TextMeshProUGUI loadingText;
+    public TMP_InputField rootField;
     public float maxTime = 300f;
 
     public Transform robotTf;
@@ -35,6 +36,8 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Screen.fullScreen = false; // You win Unity
+
         if (instance)
             Destroy(instance.gameObject);
 
@@ -47,6 +50,16 @@ public class GameManager : MonoBehaviour
 
     void Initalize()
     {
+        if (!PlayerPrefs.HasKey("rootDir")) {
+            PlayerPrefs.SetString("rootDir", "..");
+            ConfigLoader.rootDir = "..";
+            rootField.text = "..";
+        } else {
+            string rootDir = PlayerPrefs.GetString("rootDir");
+            ConfigLoader.rootDir = rootDir;
+            rootField.text = rootDir;
+        }
+
         try
         {
             ConfigLoader.LoadConfig();
@@ -64,16 +77,16 @@ public class GameManager : MonoBehaviour
 
         maxTime = ConfigLoader.simulator.MaxTime;
 
-        waypoints.Add(new Vector2(-37, 0));
+        waypoints.Add(new Vector2(-37, 0)); // Start Pos
 
         if (ConfigLoader.simulator.Seed != -1)
             Random.InitState(ConfigLoader.simulator.Seed);
 
-        for (int i=0; i<3; i++) {
-            waypoints.Add(new Vector2(Random.Range(-30, 30), Random.Range(-20, 20)));
-        }
+        waypoints.Add(new Vector2(Random.Range(-20, -5), Random.Range(-10, 10)));
+        waypoints.Add(new Vector2(Random.Range(0, 15), Random.Range(-20, 20)));
+        waypoints.Add(new Vector2(Random.Range(20, 35), Random.Range(-15, 15)));
 
-        waypoints.Add(new Vector2(37, 0));
+        waypoints.Add(new Vector2(48, 15)); // Goal Pos
 
         loadingText.text = "Waiting for Ros Bridge at '" + rosConnector.RosBridgeServerUrl + "'...";
 
@@ -156,6 +169,10 @@ public class GameManager : MonoBehaviour
         noise.adjustment = ConfigLoader.competition.getNoiseScore();
         noise.reason = "Noise Bonus";
         adjustments.Add(noise);        
+    }
+
+    public void UpdateRoot() {
+        PlayerPrefs.SetString("rootDir", rootField.text);
     }
 
     public void StopSim(string error)

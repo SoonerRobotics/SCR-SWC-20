@@ -5,9 +5,7 @@ using TMPro;
 
 public class ConfigLoader
 {
-    public static string simulatorConfig = "../simulator.cfg";
-    public static string competitionConfig = "../competition.cfg";
-
+    public static string rootDir = "..";
     public static SimulatorConfig simulator { get; private set; } = new SimulatorConfig();
     public static CompetitionConfig competition { get; private set; } = new CompetitionConfig();
     public static bool initalized = false;
@@ -15,6 +13,9 @@ public class ConfigLoader
     public static void LoadConfig()
     {
         Configuration cfg;
+
+        string simulatorConfig = rootDir + "/simulator.cfg";
+        string competitionConfig = rootDir + "/competition.cfg";
 
         // Load simulator.cfg
         try
