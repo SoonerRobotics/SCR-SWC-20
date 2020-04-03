@@ -34,6 +34,7 @@ public class ConfigLoader
             simulator.ManualTopSpeed = cfg["Simulator"]["ManualTopSpeed"].FloatValue;
             simulator.RosBridgeServerUrl = cfg["Simulator"]["RosBridgeUrl"].StringValue;
             simulator.CompetitionMode = cfg["Simulator"]["CompetitionMode"].BoolValue;
+            simulator.Seed = cfg["Simulator"]["Seed"].IntValue;
         }
         catch (Exception e)
         {
@@ -91,6 +92,7 @@ public class ConfigLoader
         public bool EnableCamera = false;
         public string RosBridgeServerUrl = "ws://localhost:9090";
         public bool CompetitionMode = false;
+        public int Seed = -1;
     }
 
     public class CompetitionConfig
@@ -100,8 +102,32 @@ public class ConfigLoader
         public ObstacleTypes Obstacles = ObstacleTypes.normal;
         public NoiseLevels NoiseLevel = NoiseLevels.reduced;
 
-        public enum ObstacleTypes { none, normal, hard };
+        public enum ObstacleTypes { normal, hard };
         public enum NoiseLevels { none, reduced, realistic };
+
+        public float getObstacleScore() {
+            switch (Obstacles) {
+                case ObstacleTypes.normal:
+                    return 1.0f;
+                case ObstacleTypes.hard:
+                    return 0.8f;
+            }
+
+            return 10f; // if error, assume they're cheating
+        }
+
+        public float getNoiseScore() {
+            switch (NoiseLevel) {
+                case NoiseLevels.none:
+                    return 2.0f;
+                case NoiseLevels.reduced:
+                    return 1.0f;
+                case NoiseLevels.realistic:
+                    return 0.7f;
+            }
+
+            return 10f; // if error, assume they're cheating
+        }
     }
 
     public class ConfigLoadException : Exception

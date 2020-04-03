@@ -619,6 +619,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loadingText: {fileID: 331788424}
   maxTime: 300
+  robotTf: {fileID: 0}
 --- !u!1 &893239806
 GameObject:
   m_ObjectHideFlags: 0

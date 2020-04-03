@@ -14,6 +14,7 @@ public class AckermannController : MonoBehaviour
 
     public GameObject leftWheel;
     public GameObject rightWheel;
+    public GameObject frontAxleTf;
 
     [Range(0.0F, 1.0F)]
     public float drag = 0.85f;
@@ -37,10 +38,16 @@ public class AckermannController : MonoBehaviour
 
     private float Radius;
 
+    private Rigidbody rb;
+
     // Start is called before the first frame update
     void Start()
     {
         ManualTopSpeed = ConfigLoader.simulator.ManualTopSpeed;
+
+        GameManager.instance.robotTf = frontAxleTf.transform;
+
+        rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -50,7 +57,7 @@ public class AckermannController : MonoBehaviour
             return;
 
         CntrlPower = Input.GetAxis("Speed") * ManualTopSpeed;
-        CntrlAngle = Input.GetAxis("Angle") * 30;
+        CntrlAngle = Input.GetAxis("Angle") * 20;
     }
 
     private void FixedUpdate()

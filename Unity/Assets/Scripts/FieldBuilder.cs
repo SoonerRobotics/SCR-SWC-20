@@ -7,15 +7,13 @@ public class FieldBuilder : MonoBehaviour
 {
     public GameObject[] obstaclePrefabs;
     public GameObject waypointPrefab;
-    public GameObject waypointHolder;
-
     public int height = 117;
     public int width = 57;
 
-    public float spread = 1.5f;
+    public float spread = 2.5f;
 
     [Range(0.0f, 1.0f)]
-    public float density = 0.5f;
+    public float density = 0.35f;
 
     public int seed = 0;
 
@@ -40,16 +38,34 @@ public class FieldBuilder : MonoBehaviour
         return (x, y);
     }
 
-    bool[,] maze;
-    HashSet<(int, int)> frontier;
-    GameObject obstacleHolder;
-
     // Start is called before the first frame update
     void Start()
     {
-        Random.InitState(seed);
+
+        GameObject waypointHolder = new GameObject("Waypoints");;
+
+        bool[,] maze;
+        HashSet<(int, int)> frontier;
+
+        if (ConfigLoader.simulator.Seed != -1)
+            Random.InitState(ConfigLoader.simulator.Seed);
 
         Vector2[] waypoints = GameManager.instance.GetWaypoints();
+
+        for (int i=0; i < waypoints.Count(); i++) {
+            GameObject go = Instantiate(waypointPrefab, new Vector3(waypoints[i].x, 0, waypoints[i].y), Quaternion.identity, waypointHolder.transform);
+
+            Waypoint wpt = go.GetComponent<Waypoint>();
+            wpt.index = i;
+        }
+
+        // if (ConfigLoader.competition.Obstacles == ConfigLoader.CompetitionConfig.ObstacleTypes.none) {
+        //     return;
+        // }
+
+        if (ConfigLoader.competition.Obstacles == ConfigLoader.CompetitionConfig.ObstacleTypes.normal) {
+            density /= 3.0f;
+        }
 
         width = (int)(width / spread);
         height = (int)(height / spread);
@@ -60,8 +76,6 @@ public class FieldBuilder : MonoBehaviour
         (int, int) goal = waypointToTuple(waypoints[waypoints.Count() - 1]);
         maze[goal.Item1, goal.Item2] = true;
         frontier.Add(goal);
-
-        obstacleHolder = new GameObject("Obstacles");
 
         while (frontier.Count > 0) {
             (int, int) cell = frontier.ToArray()[Random.Range(0, frontier.Count)];
@@ -90,10 +104,13 @@ public class FieldBuilder : MonoBehaviour
             for (int i=-freeArea; i<=freeArea; i++) {
                 for (int j=-freeArea; j<=freeArea; j++) {
                     (int, int) wpt = waypointToTuple(waypoint);
-                    maze[wpt.Item1 + i, wpt.Item2 + j] = true;
+                    if (wpt.Item1 + i >= 0 && wpt.Item1 + i < width && wpt.Item1 + j >= 0 && wpt.Item1 + j <= height)
+                        maze[wpt.Item1 + i, wpt.Item2 + j] = true;
                 }
             }
         }
+
+        GameObject obstacleHolder = new GameObject("Obstacles");
 
         for (int h = 0; h < height; h++) {
             for (int w = 0; w < width; w++) {

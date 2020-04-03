@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI loadingText;
     public float maxTime = 300f;
 
+    public Transform robotTf;
+
     private float startTime = 100000f;
 
     private List<ScoreAdjust> adjustments = new List<ScoreAdjust>();
@@ -24,7 +26,8 @@ public class GameManager : MonoBehaviour
     {
         INIT,
         WAITING_FOR_ROS,
-        PLAYING
+        PLAYING,
+        QUITTING
     }
 
     public GameState State { get; private set; } = GameState.INIT;
@@ -60,22 +63,27 @@ public class GameManager : MonoBehaviour
         rosConnector.enabled = true;
 
         waypoints.Add(new Vector2(0, -37));
-        waypoints.Add(new Vector2(15, 0));
+
+        if (ConfigLoader.simulator.Seed != -1)
+            Random.InitState(ConfigLoader.simulator.Seed);
+
+        for (int i=0; i<3; i++) {
+            waypoints.Add(new Vector2(Random.Range(-30, 30), Random.Range(-20, 20)));
+        }
+
         waypoints.Add(new Vector2(0, 37));
 
         loadingText.text = "Waiting for Ros Bridge at '" + rosConnector.RosBridgeServerUrl + "'...";
 
         State = GameState.WAITING_FOR_ROS;
     }
+    private void FixedUpdate() {
 
-    // Update is called once per frame
-    void Update()
-    {
-        
         if (State == GameState.PLAYING && !rosConnector.Connected)
         {
             if (ConfigLoader.simulator.CompetitionMode) {
                 StopSim("Connection to RosBridge lost!");
+                State = GameState.QUITTING;
             } else {
                 ReloadSim();
             }
@@ -85,12 +93,14 @@ public class GameManager : MonoBehaviour
         {
             State = GameState.PLAYING;
             SceneManager.LoadScene(1);
+            AddBonusAdjustments();
         }
 
         // Time limit reached
         if (State == GameState.PLAYING && ConfigLoader.simulator.CompetitionMode && Time.time - startTime >= maxTime)
         {
             StopSim(null);
+            State = GameState.QUITTING;
         }
     }
 
@@ -100,10 +110,19 @@ public class GameManager : MonoBehaviour
 
     public void ReachWaypoint(int index)
     {
+        Debug.Log("reached " + index);
+
         if (index == waypoints.Count - 1 && ConfigLoader.simulator.CompetitionMode)
         {
             StopSim(null);
             return;
+        }
+
+        if (index > 0) {
+            ScoreAdjust waypointScore = new ScoreAdjust();
+            waypointScore.adjustment = 0.8f;
+            waypointScore.reason = "Waypoint " + index + " reached";
+            adjustments.Add(waypointScore);
         }
     }
 
@@ -113,6 +132,7 @@ public class GameManager : MonoBehaviour
         State = GameState.INIT;
         SceneManager.LoadScene(0);
         adjustments = new List<ScoreAdjust>();
+        AddBonusAdjustments();
     }
 
     // Restart the sim, basically just resetting the level
@@ -121,11 +141,28 @@ public class GameManager : MonoBehaviour
         State = GameState.PLAYING;
         SceneManager.LoadScene(1);
         adjustments = new List<ScoreAdjust>();
+        AddBonusAdjustments();
+    }
+
+    public void AddBonusAdjustments() {
+        ScoreAdjust obstacles = new ScoreAdjust();
+        obstacles.adjustment = ConfigLoader.competition.getObstacleScore();
+        obstacles.reason = "Obstacles Bonus";
+        adjustments.Add(obstacles);
+
+        ScoreAdjust noise = new ScoreAdjust();
+        noise.adjustment = ConfigLoader.competition.getNoiseScore();
+        noise.reason = "Noise Bonus";
+        adjustments.Add(noise);        
     }
 
     public void StopSim(string error)
     {
         float finalTime = Time.time - startTime;
+
+        if (finalTime > maxTime) {
+            finalTime = maxTime;
+        }
 
         Debug.Log("Job's done!");
 
@@ -141,8 +178,7 @@ public class GameManager : MonoBehaviour
 
         foreach (ScoreAdjust score in adjustments)
         {
-            writer.WriteLine(score.adjustment);
-            writer.WriteLine(score.reason);
+            writer.WriteLine(score.adjustment + ": " + score.reason);
         }
 
         writer.Close();
