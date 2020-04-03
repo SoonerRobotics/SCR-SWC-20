@@ -7,8 +7,8 @@ ros::Publisher g_control_pub;
 void controlTimerCallback(const ros::TimerEvent& timer_event) {
     // Create a new message with speed 1 (m/s) and turn angle 15 (degrees CW)
     swc_msgs::Control controlMsg;
-    controlMsg.speed = 1000;
-    controlMsg.turn_angle = 0;
+    controlMsg.speed = 1;
+    controlMsg.turn_angle = 15;
 
     // Publish the message to /sim/control so the simulator receives it
     g_control_pub.publish(controlMsg);
