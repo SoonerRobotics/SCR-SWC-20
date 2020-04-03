@@ -62,7 +62,9 @@ public class GameManager : MonoBehaviour
         rosConnector.RosBridgeServerUrl = ConfigLoader.simulator.RosBridgeServerUrl;
         rosConnector.enabled = true;
 
-        waypoints.Add(new Vector2(0, -37));
+        maxTime = ConfigLoader.simulator.MaxTime;
+
+        waypoints.Add(new Vector2(-37, 0));
 
         if (ConfigLoader.simulator.Seed != -1)
             Random.InitState(ConfigLoader.simulator.Seed);
@@ -71,7 +73,7 @@ public class GameManager : MonoBehaviour
             waypoints.Add(new Vector2(Random.Range(-30, 30), Random.Range(-20, 20)));
         }
 
-        waypoints.Add(new Vector2(0, 37));
+        waypoints.Add(new Vector2(37, 0));
 
         loadingText.text = "Waiting for Ros Bridge at '" + rosConnector.RosBridgeServerUrl + "'...";
 

@@ -50,7 +50,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 
             Vector3 eulers = c.transform.rotation.eulerAngles;
             eulers += new Vector3(SimUtils.getRandNormal(0, orientationNoiseStdDev), SimUtils.getRandNormal(0, orientationNoiseStdDev), SimUtils.getRandNormal(0, orientationNoiseStdDev));
-            Quaternion orientation = Quaternion.Euler(eulers.z, -eulers.x, -eulers.y);
+            Quaternion orientation = Quaternion.Euler(eulers.x, -eulers.z, -eulers.y);
 
             message.orientation.w = orientation.w;
             message.orientation.x = orientation.x;
@@ -59,12 +59,12 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 
             Vector3 accel = c.transform.worldToLocalMatrix * c.accel; // sick maths
 
-            message.linear_acceleration.x = accel.z + SimUtils.getRandNormal(0, accelNoiseStdDev);
-            message.linear_acceleration.y = accel.x + SimUtils.getRandNormal(0, accelNoiseStdDev);
+            message.linear_acceleration.x = accel.x + SimUtils.getRandNormal(0, accelNoiseStdDev);
+            message.linear_acceleration.y = accel.z + SimUtils.getRandNormal(0, accelNoiseStdDev);
             message.linear_acceleration.z = accel.y + SimUtils.getRandNormal(0, accelNoiseStdDev);
 
-            message.angular_velocity.x = c.angular_vel.z + SimUtils.getRandNormal(0, angularVelocityNoiseStdDev);
-            message.angular_velocity.y = -c.angular_vel.x + SimUtils.getRandNormal(0, angularVelocityNoiseStdDev);
+            message.angular_velocity.x = c.angular_vel.x + SimUtils.getRandNormal(0, angularVelocityNoiseStdDev);
+            message.angular_velocity.y = -c.angular_vel.z + SimUtils.getRandNormal(0, angularVelocityNoiseStdDev);
             message.angular_velocity.z = -c.angular_vel.y + SimUtils.getRandNormal(0, angularVelocityNoiseStdDev);
 
             Publish(message);

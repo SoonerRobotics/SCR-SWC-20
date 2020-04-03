@@ -33,8 +33,10 @@ public class ConfigLoader
             simulator.EnableCamera = cfg["Simulator"]["EnableCamera"].BoolValue;
             simulator.ManualTopSpeed = cfg["Simulator"]["ManualTopSpeed"].FloatValue;
             simulator.RosBridgeServerUrl = cfg["Simulator"]["RosBridgeUrl"].StringValue;
-            simulator.CompetitionMode = cfg["Simulator"]["CompetitionMode"].BoolValue;
             simulator.Seed = cfg["Simulator"]["Seed"].IntValue;
+
+            simulator.CompetitionMode = cfg["Competition"]["CompetitionMode"].BoolValue;
+            simulator.MaxTime = cfg["Competition"]["MaxTime"].FloatValue;
         }
         catch (Exception e)
         {
@@ -93,6 +95,8 @@ public class ConfigLoader
         public string RosBridgeServerUrl = "ws://localhost:9090";
         public bool CompetitionMode = false;
         public int Seed = -1;
+
+        public float MaxTime = 300f;
     }
 
     public class CompetitionConfig
@@ -102,15 +106,17 @@ public class ConfigLoader
         public ObstacleTypes Obstacles = ObstacleTypes.normal;
         public NoiseLevels NoiseLevel = NoiseLevels.reduced;
 
-        public enum ObstacleTypes { normal, hard };
+        public enum ObstacleTypes { none, normal, hard };
         public enum NoiseLevels { none, reduced, realistic };
 
         public float getObstacleScore() {
             switch (Obstacles) {
+                case ObstacleTypes.none:
+                    return 8.0f;
                 case ObstacleTypes.normal:
                     return 1.0f;
                 case ObstacleTypes.hard:
-                    return 0.8f;
+                    return 0.4f;
             }
 
             return 10f; // if error, assume they're cheating
@@ -119,11 +125,11 @@ public class ConfigLoader
         public float getNoiseScore() {
             switch (NoiseLevel) {
                 case NoiseLevels.none:
-                    return 2.0f;
+                    return 8.0f;
                 case NoiseLevels.reduced:
                     return 1.0f;
                 case NoiseLevels.realistic:
-                    return 0.7f;
+                    return 0.6f;
             }
 
             return 10f; // if error, assume they're cheating

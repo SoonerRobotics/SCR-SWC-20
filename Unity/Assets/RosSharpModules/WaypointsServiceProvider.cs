@@ -35,8 +35,8 @@ namespace RosSharp.RosBridgeClient.MessageTypes.swc_msgs
             
             for (int i=0 ;i<waypoints_raw.Length; i++) {
                 Gps pt = new Gps();
-                pt.latitude = (waypoints_raw[i].y) / 110944.33 + 35.205853f;
-                pt.longitude = (waypoints_raw[i].x) / 91058.93 + -97.442325f;
+                pt.latitude = (waypoints_raw[i].x) / 110944.33 + 35.205853f;
+                pt.longitude = (waypoints_raw[i].y) / 91058.93 + -97.442325f;
                 response.waypoints[i] = pt;
             }
 

@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 1923489091770420782}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.5, y: 2.5, z: 2.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 524811519996994861}
   - {fileID: 1763785242718129316}
@@ -43,7 +43,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.55
   m_Height: 1.58
   m_Direction: 1
   m_Center: {x: 0, y: 0.13, z: 0}
@@ -105,7 +105,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 68e91ea0d209b56439de44fbf8954afe, type: 2}
+  - {fileID: 2100000, guid: d66d47edfafaae64097082a5baaf9f3d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -192,7 +192,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 68e91ea0d209b56439de44fbf8954afe, type: 2}
+      objectReference: {fileID: 2100000, guid: d66d47edfafaae64097082a5baaf9f3d, type: 2}
     - target: {fileID: -1655424787016328880, guid: 245cb1e3f7a32524aa3b4d54daf4357d,
         type: 3}
       propertyPath: m_Materials.Array.data[0]

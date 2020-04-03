@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using RosSharp.RosBridgeClient;
 using UnityEngine;
 
 
@@ -15,6 +16,7 @@ public class AckermannController : MonoBehaviour
     public GameObject leftWheel;
     public GameObject rightWheel;
     public GameObject frontAxleTf;
+    public GameObject robotCamera;
 
     [Range(0.0F, 1.0F)]
     public float drag = 0.85f;
@@ -46,6 +48,11 @@ public class AckermannController : MonoBehaviour
         ManualTopSpeed = ConfigLoader.simulator.ManualTopSpeed;
 
         GameManager.instance.robotTf = frontAxleTf.transform;
+
+        if (ConfigLoader.simulator.EnableCamera) {
+            robotCamera.SetActive(true);
+            GetComponent<ImagePublisher>().enabled = true;
+        }
 
         rb = GetComponent<Rigidbody>();
     }

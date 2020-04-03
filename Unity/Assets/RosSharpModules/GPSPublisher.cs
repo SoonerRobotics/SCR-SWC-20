@@ -43,8 +43,8 @@ namespace RosSharp.RosBridgeClient.MessageTypes.swc_msgs
 
         private void WriteMessage() {
             Vector3 pos = this.transform.position;
-            message.latitude = (pos.z + SimUtils.getRandNormal(0, latNoiseStdDev)) / 110944.33 + lat0Pos;
-            message.longitude = (pos.x + SimUtils.getRandNormal(0, lonNoiseStdDev)) / 91058.93 + lon0Pos;
+            message.latitude = (pos.x + SimUtils.getRandNormal(0, latNoiseStdDev)) / 110944.33 + lat0Pos;
+            message.longitude = (pos.z + SimUtils.getRandNormal(0, lonNoiseStdDev)) / 91058.93 + lon0Pos;
             Publish(message);
         }
     }

@@ -7,8 +7,8 @@ public class FieldBuilder : MonoBehaviour
 {
     public GameObject[] obstaclePrefabs;
     public GameObject waypointPrefab;
-    public int height = 117;
-    public int width = 57;
+    public int height = 57;
+    public int width = 117;
 
     public float spread = 2.5f;
 
@@ -59,9 +59,9 @@ public class FieldBuilder : MonoBehaviour
             wpt.index = i;
         }
 
-        // if (ConfigLoader.competition.Obstacles == ConfigLoader.CompetitionConfig.ObstacleTypes.none) {
-        //     return;
-        // }
+        if (ConfigLoader.competition.Obstacles == ConfigLoader.CompetitionConfig.ObstacleTypes.none) {
+            return;
+        }
 
         if (ConfigLoader.competition.Obstacles == ConfigLoader.CompetitionConfig.ObstacleTypes.normal) {
             density /= 3.0f;
