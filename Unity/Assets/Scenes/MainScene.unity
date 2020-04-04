@@ -757,7 +757,7 @@ MonoBehaviour:
   accelNoiseStdDev: 0.15
   orientationNoiseStdDev: 0.017
   angularVelocityNoiseStdDev: 0.017
-  updatePeriod: 0.1
+  updatePeriod: 0.04
 --- !u!114 &829615090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1012,7 +1012,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   samples: 360
-  update_rate: 1800
+  update_rate: 3600
   angle_min: 0
   angle_max: 6.28
   angle_increment: 0.0174533
@@ -1797,8 +1797,8 @@ Camera:
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 1
   m_TargetEye: 3
-  m_HDR: 1
-  m_AllowMSAA: 1
+  m_HDR: 0
+  m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
