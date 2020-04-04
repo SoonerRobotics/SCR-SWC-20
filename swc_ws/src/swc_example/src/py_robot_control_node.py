@@ -11,7 +11,7 @@ _control_pub = None
 def timer_callback(event):
     # Create a new message with speed 1 (m/s) and turn angle 15 (degrees CW)
     control_msg = Control()
-    control_msg.speed = 1
+    control_msg.speed = 2 #so we go super speed
     control_msg.turn_angle = 15
 
     # Publish the message to /sim/control so the simulator receives it
