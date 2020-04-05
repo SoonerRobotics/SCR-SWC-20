@@ -7,6 +7,35 @@ from swc_msgs.srv import Waypoints
 
 _control_pub = None
 
+class PIDController():
+    '''Oooh! Documentation! This is me copying other people's work because I don't want to import anything'''
+    def __init__(self, kP, kI, kD, setpoint): #self explanatory. make sure these are fairly low
+        self.kP = kP
+        self.kI = kI
+        self.kD = kD
+        self.setpoint = setpoint
+        self.accumulator = 0
+        self.d_time = 0
+        self.error = 0
+        self.last_error = 0
+    
+    def reset(self): #idk when need this but here it is
+        self.accumulator = 0
+        self.d_time = 0
+        self.error = 0
+        self.last_error = 0
+
+    def set_setpoint(self, setpoint): #prob won't need this
+        self.setpoint = setpoint
+
+    def calculate(self, curr_value): #this might work
+        self.error = setpoint - curr_value
+        self.d_time += 1
+        self.accumulator += self.error * self.d_time
+        deriv_of_error = (self.error - self.last_error) / self.d_time
+        self.last_error = self.error
+        return self.kP * self.error + self.accumulator *self. kI + deriv_of_error * self.kD
+    # will include setters and getters for all these values and stuff later but I don't think I'll need them
 
 def timer_callback(event):
     # Create a new message with speed 1 (m/s) and turn angle 15 (degrees CW)
