@@ -7,36 +7,79 @@ from swc_msgs.srv import Waypoints
 
 _control_pub = None
 
+# Implements a PID control loop. copyed from allwpilib/wpilibj/src/main/java/edu/wpi/first/wpilibj/controller/PIDController.java
+# then translated into python (I did just skip a bunch of funcs I thought I wouldn't need, we'll see
 class PIDController():
-    '''Oooh! Documentation! This is me copying other people's work because I don't want to import anything'''
-    def __init__(self, kP, kI, kD, setpoint): #self explanatory. make sure these are fairly low
-        self.kP = kP
-        self.kI = kI
-        self.kD = kD
-        self.setpoint = setpoint
-        self.accumulator = 0
-        self.d_time = 0
-        self.error = 0
-        self.last_error = 0
+    def __init__(self, Kp, Ki, Kd, period, setpoint, posTolerance):
+        self.m_Kp = Kp
+        self.m_Ki = Ki
+        self.m_Kd = Kd
+        self.m_period = period
+        self.m_maximumIntegral = 1.0
+        self.m_minimumIntegral = -1.0
+        self.m_maximumInput = 1.0
+        self.m_minimumInput = -1.0
+        self.m_continuous = False
+        self.m_positionError = 0.0
+        self.m_velocityError = 0.0
+        self.m_prevError = 0.0
+        self.m_totalError = 0.0
+        self.m_positionTolerance = posTolerance
+        self.m_velocityTolerance = float("inf")
+        self.m_setpoint = setpoint
+
+    def setPID(self, Kp, Ki, Kd):
+        self.m_Kp = Kp
+        self.m_Ki = Ki
+        self.m_Kd = Kd
+
+    def setSetpoint(self, setpoint):
+        self.m_setpoint = setpoint
+  
+    def getSetpoint(self):
+        return self.m_setpoint
     
-    def reset(self): #idk when need this but here it is
-        self.accumulator = 0
-        self.d_time = 0
-        self.error = 0
-        self.last_error = 0
+    def atSetpoint(self):
+        return math.abs(self.m_positionError) < m_positionTolerance and math.abs(self.m_velocityError) < m_velocityTolerance
+ 
+    def enableContinuousInput(self, minimumInput, maximumInput):
+        self.m_continuous = True;
+        self.m_minimumInput = minimumInput
+        self.m_maximumInput = maximumInput
+ 
+    def disableContinuousInput(self):
+        self.m_continuous = False
 
-    def set_setpoint(self, setpoint): #prob won't need this
-        self.setpoint = setpoint
+    def getModulusError(self, measurement):
+        modulus = self.maximumInput - self.minimumInput
+        error = self.setpoint % modulus - measurement % modulus
+        return (error - self.minimumInput) % modulus + self.minimumInput
+        
+    def clamp(self, value, max_, min_):
+        return max(min(value, max_), min_)
+    
+    def calculate(self, measurement):
+        self.m_prevError = self.m_positionError
 
-    def calculate(self, curr_value): #this might work
-        self.error = setpoint - curr_value
-        self.d_time += 1
-        self.accumulator += self.error * self.d_time
-        deriv_of_error = (self.error - self.last_error) / self.d_time
-        self.last_error = self.error
-        return self.kP * self.error + self.accumulator *self. kI + deriv_of_error * self.kD
-    # will include setters and getters for all these values and stuff later but I don't think I'll need them
+        if self.m_continuous:
+            self.m_positionError = getModulusError(measurement)
+        else:
+            self.m_positionError = self.m_setpoint - measurement
+            self.m_velocityError = (self.m_positionError - self.m_prevError) / self.m_period
+        
+        if m_Ki != 0:
+            # SE says max(min(my_value, max_value), min_value)
+            self.m_totalError = clamp(self.m_totalError + self.m_positionError * self.m_period, self.m_minimumIntegral / self.m_Ki, self.m_maximumIntegral / self.m_Ki)
+        
+        return self.m_Kp * self.m_positionError + self.m_Ki * self.m_totalError + self.m_Kd * self.m_velocityError;
 
+   # Resets the previous error and the integral terms
+  def reset(self)
+    self.m_prevError = 0;
+    self.m_totalError = 0;
+    
+    # end ##################################################################### no
+    
 def timer_callback(event):
     # Create a new message with speed 1 (m/s) and turn angle 15 (degrees CW)
     control_msg = Control()
