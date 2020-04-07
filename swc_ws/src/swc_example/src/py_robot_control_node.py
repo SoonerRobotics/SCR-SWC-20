@@ -141,10 +141,12 @@ def timer_callback(event):
     # Publish the message to /sim/control so the simulator receives it
     _control_pub.publish(control_msg)
 
-
 def main():
     global _control_pub
 
+    # create instance of Robot class
+    robot = Robot("DarkTheme")
+    
     # Initalize our node in ROS
     rospy.init_node('py_robot_control_node')
 
@@ -156,9 +158,13 @@ def main():
     waypoints = rospy.ServiceProxy('/sim/waypoints', Waypoints)()
 
     print(waypoints.waypoints)
+    
+    # Define where we need to go (order is: start, bonus, bonus, bonus, finish with bonusses roughly in order of how far away they are)
+    robot.setGoal(waypoints.waypoints[4].latitude, waypoints.waypoints[4].longitude)
 
     # Create a timer that calls timer_callback() with a period of 0.1 (10 Hz)
     rospy.Timer(rospy.Duration(0.1), timer_callback)
+    ## rospy.Subscriber("/sim/Gps", Gps, robot.updateCoords())
 
     # Let ROS take control of this thread until a ROS wants to kill
     rospy.spin()
