@@ -3,8 +3,8 @@
     <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
 
     <!-- Robot control node (C++) -->
-    <node pkg="swc_example" type="cpp_robot_control_node" name="cpp_robot_control_node" output="screen" />
+    <!-- node pkg="swc_example" type="cpp_robot_control_node" name="cpp_robot_control_node" output="screen" /> -->
 
     <!-- Robot control node (Python2) -->
-    <!-- <node pkg="swc_example" type="py_robot_control_node.py" name="py_robot_control_node" output="screen" /> -->
+    <node pkg="swc_example" type="py_robot_control_node.py" name="py_robot_control_node" output="screen" />
 </launch>
