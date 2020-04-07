@@ -64,14 +64,14 @@ class PIDController():
         self.m_prevError = self.m_positionError
 
         if self.m_continuous:
-            self.m_positionError = getModulusError(measurement)
+            self.m_positionError = self.getModulusError(measurement)
         else:
             self.m_positionError = self.m_setpoint - measurement
             self.m_velocityError = (self.m_positionError - self.m_prevError) / self.m_period
         
-        if m_Ki != 0:
+        if self.m_Ki != 0:
             # SE says max(min(my_value, max_value), min_value)
-            self.m_totalError = clamp(self.m_totalError + self.m_positionError * self.m_period, self.m_minimumIntegral / self.m_Ki, self.m_maximumIntegral / self.m_Ki)
+            self.m_totalError = self.clamp(self.m_totalError + self.m_positionError * self.m_period, self.m_minimumIntegral / self.m_Ki, self.m_maximumIntegral / self.m_Ki)
         
         return self.m_Kp * self.m_positionError + self.m_Ki * self.m_totalError + self.m_Kd * self.m_velocityError
 
@@ -102,16 +102,16 @@ class Robot():
         self.goal_lon = lon
     
     def dist(self, x1, y1, x2, y2):
-        return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
+        return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2) # distance formula, derived from pythagorean theorum
     
     def getDist(self):
         return self.dist(self.curr_lon, self.curr_lat, self.goal_lon, self.goal_lat)
     
     def getXDist(self):
-        return self.goal_lon - self.curr_lon #idk if this is right, might need to flip
+        return self.goal_lon - self.curr_lon # idk if this is right, might need to flip
     
     def getDesiredAngle(self):
-        return math.asin(self.getXDist(), self.getDist())
+        return math.asin(self.getXDist() / self.getDist()) # trig. this is _soh_cahtoa. So sin(angle) gives opposite / hypot. So asin(opposit / hypot) gives angle (asin is inverse sine)
     
     def getCurrAngle(self):
         return self.curr_angle
@@ -140,10 +140,12 @@ def timer_callback(event):
     control_msg.turn_angle = random.randint(-10, 10)
 
     # Publish the message to /sim/control so the simulator receives it
-    _control_pub.publish(control_msg)
+    _control_pub.publish(robot.getAction())
 
 def main():
     global _control_pub
+    global robot # yes, bad practice. Too bad. deal with it. After all, you're most likely me. Either that, or you're Justin because I asked for a code review
+    # Hi Justin! Asking Justin > reading the docs/SO/CD
 
     # create instance of Robot class
     robot = Robot("DarkTheme")
