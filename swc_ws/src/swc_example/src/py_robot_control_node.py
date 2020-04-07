@@ -4,6 +4,7 @@ import rospy
 import math
 import random
 from swc_msgs.msg import Control
+from swc_msgs.msg import Gps
 from swc_msgs.srv import Waypoints
 
 _control_pub = None
@@ -92,9 +93,9 @@ class Robot():
         self.speedPID = PIDController(0.5, 0.0001, 0.0001, 0.1, 0, 0.1) # we want no error/zero distance, but we have .1 tolerance
         self.anglePID = PIDController(0.1, 0.000001, 0.000001, 0.1, 0, 0.1) # we want no diff between angle and angle to goal
         
-    def updateCoords(self, lat, lon):
-        self.curr_lat = lat
-        self.curr_lon = lon
+    def updateCoords(self, gps):
+        self.curr_lat = gps.latitude
+        self.curr_lon = gps.longitude
     
     def setGoal(self, lat, lon):
         self.goal_lat = lat
@@ -164,7 +165,7 @@ def main():
 
     # Create a timer that calls timer_callback() with a period of 0.1 (10 Hz)
     rospy.Timer(rospy.Duration(0.1), timer_callback)
-    ## rospy.Subscriber("/sim/Gps", Gps, robot.updateCoords())
+    rospy.Subscriber("/sim/gps", Gps, robot.updateCoords)
 
     # Let ROS take control of this thread until a ROS wants to kill
     rospy.spin()
