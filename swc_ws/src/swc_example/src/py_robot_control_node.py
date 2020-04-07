@@ -2,13 +2,14 @@
 
 import rospy
 import math
+import random
 from swc_msgs.msg import Control
 from swc_msgs.srv import Waypoints
 
 _control_pub = None
 
 # Implements a PID control loop. copyed from allwpilib/wpilibj/src/main/java/edu/wpi/first/wpilibj/controller/PIDController.java
-# then translated into python (I did just skip a bunch of funcs I thought I wouldn't need, we'll see
+# then translated into python (I did just skip a bunch of funcs I thought I wouldn't need, we'll see)
 class PIDController():
     def __init__(self, Kp, Ki, Kd, period, setpoint, posTolerance):
         self.m_Kp = Kp
@@ -43,7 +44,7 @@ class PIDController():
         return math.abs(self.m_positionError) < m_positionTolerance and math.abs(self.m_velocityError) < m_velocityTolerance
  
     def enableContinuousInput(self, minimumInput, maximumInput):
-        self.m_continuous = True;
+        self.m_continuous = True
         self.m_minimumInput = minimumInput
         self.m_maximumInput = maximumInput
  
@@ -71,12 +72,12 @@ class PIDController():
             # SE says max(min(my_value, max_value), min_value)
             self.m_totalError = clamp(self.m_totalError + self.m_positionError * self.m_period, self.m_minimumIntegral / self.m_Ki, self.m_maximumIntegral / self.m_Ki)
         
-        return self.m_Kp * self.m_positionError + self.m_Ki * self.m_totalError + self.m_Kd * self.m_velocityError;
+        return self.m_Kp * self.m_positionError + self.m_Ki * self.m_totalError + self.m_Kd * self.m_velocityError
 
    # Resets the previous error and the integral terms
-  def reset(self)
-    self.m_prevError = 0;
-    self.m_totalError = 0;
+    def reset(self):
+        self.m_prevError = 0
+        self.m_totalError = 0
     
     # end ##################################################################### no
     
@@ -130,11 +131,12 @@ class Robot():
         return control_msg
     
     # # # # # # # # # # # 3 3 3 3 # # # # # # # # #  ##  # # # # # # # # # #  #   # #  # # ###  # # # # # # # # ### # # ####### entropy
+
 def timer_callback(event):
     # Create a new message with speed 1 (m/s) and turn angle 15 (degrees CW)
     control_msg = Control()
     control_msg.speed = 2 #so we go super speed
-    control_msg.turn_angle = 15
+    control_msg.turn_angle = random.randint(-10, 10)
 
     # Publish the message to /sim/control so the simulator receives it
     _control_pub.publish(control_msg)
