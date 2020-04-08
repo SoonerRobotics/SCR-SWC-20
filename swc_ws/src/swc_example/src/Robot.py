@@ -20,12 +20,10 @@ class Robot():
     def updateCoords(self, gps):
         self.curr_lat = gps.latitude
         self.curr_lon = gps.longitude
-        if (-0.000001 < (self.curr_lat - self.goal_lat) < 0.000001) and (-0.000001 < (self.curr_lon - self.goal_lon) < 0.000001) and not self.target_reached: # need to add better checking, but this works for now
-            self.target_reached = True # this var seems uneccessary but Ima leave it for now
+        if self.curr_lat > self.goal_lat and not self.target_reached: # if we've made it past 1st waypoint
+            self.target_reached = True # really so we don't have to waste (what little) resoures we're using
             self.target_index += 1
-            self.updateTarget(self.target_index)
-        else:
-            self.target_reached = False # maybe not useless?
+            self.updateTarget(self.target_index) # then go for the goal
 
     def updateTarget(self, index):
         self.goal_lat = self.target_waypoints[index].latitude
@@ -56,11 +54,12 @@ class Robot():
     
     # final function call for speed
     def getDesiredSpeed(self):
-        return self.speedPID.calculate(self.getDist()) # it's WORKING!
+        return 2 # it's WORKING! but honestly you don't need a PID for this. Just go fast lol
         
     # final function call for angle
     def getAngle(self):
-        return self.curr_angle - self.getDesiredAngle() # It's WORKING! but anglePID is messed up
+        return (self.curr_angle - self.getDesiredAngle()) * 4 # It's WORKING! but anglePID is messed up. And we understeer a lot
+        # that's why we have a x3
         
     # function that actually gives the control() message
     def getAction(self):
