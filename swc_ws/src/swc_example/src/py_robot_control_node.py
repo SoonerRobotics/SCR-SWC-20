@@ -33,7 +33,7 @@ def main():
     # Define where we need to go (order is: start, bonus, bonus, bonus, finish with bonusses roughly in 
     # order of how far away they are)
     # create instance of Robot class
-    robot = r.Robot("DarkTheme", waypoints.waypoints)
+    robot = r.Robot("DarkTheme", waypoints.waypoints[0], waypoints.waypoints[4])
 
     # Create a timer that calls timer_callback() with a period of 0.1 (10 Hz)
     rospy.Timer(rospy.Duration(0.1), timer_callback)
