@@ -16,7 +16,8 @@ def timer_callback(event):
 
 def main():
     global _control_pub
-    global robot # yes, bad practice. Too bad. deal with it. After all, you're most likely me. Either that, or you're Justin because I asked for a code review
+    global robot # yes, bad practice. Too bad. deal with it. After all, you're most likely me.
+    # Either that, or you're Justin because I asked for a code review
     # Hi Justin! (Asking Justin > reading the docs/SO/CD) => True
     
     # Initalize our node in ROS
@@ -29,9 +30,10 @@ def main():
     rospy.wait_for_service('/sim/waypoints')
     waypoints = rospy.ServiceProxy('/sim/waypoints', Waypoints)()
 
-    # Define where we need to go (order is: start, bonus, bonus, bonus, finish with bonusses roughly in order of how far away they are)
+    # Define where we need to go (order is: start, bonus, bonus, bonus, finish with bonusses roughly in 
+    # order of how far away they are)
     # create instance of Robot class
-    robot = r.Robot("DarkTheme", waypoints.waypoints[4].latitude, waypoints.waypoints[4].longitude)
+    robot = r.Robot("DarkTheme", waypoints.waypoints[0], waypoints.waypoints[4])
 
     # Create a timer that calls timer_callback() with a period of 0.1 (10 Hz)
     rospy.Timer(rospy.Duration(0.1), timer_callback)

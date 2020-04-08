@@ -4,12 +4,12 @@ import math
 import tf
 
 class Robot():
-    def __init__(self, name, goal_lat, goal_lon):
+    def __init__(self, name, start_waypoint, goal_waypoint):
         self.name = name
-        self.curr_lat = 0.0
-        self.curr_lon = 0.0
-        self.goal_lat = goal_lat
-        self.goal_lon = goal_lon        #                   |
+        self.curr_lat = start_waypoint.latitude
+        self.curr_lon = start_waypoint.longitude
+        self.goal_lat = goal_waypoint.latitude
+        self.goal_lon = goal_waypoint.longitude  #          |
         self.curr_angle = 0.0           #idk if this period V is right (like, the param)
         self.speedPID = pid.PIDController(1, 0.0001, 0.0001, 0.1, 0, 0.1) # we want no error/zero distance, but we have .1 tolerance
         self.anglePID = pid.PIDController(1, 0.0001, 0.0001, 0.1, 0, 0.1) # we want no diff between angle and angle to goal
@@ -40,7 +40,7 @@ class Robot():
         quat = data.orientation # we're interested in orientation
         explicit_quat = [quat.x, quat.y, quat.z, quat.w] # this is a workaround for types not playing nice
         euler = tf.transformations.euler_from_quaternion(explicit_quat) # get a euler
-        self.curr_angle = euler[2] # and return the yaw
+        self.curr_angle = euler[2] # and update the yaw
     
     # final function call for speed
     def getDesiredSpeed(self):
