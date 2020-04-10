@@ -115,10 +115,14 @@ public class FieldBuilder : MonoBehaviour
 
         GameObject obstacleHolder = new GameObject("Obstacles");
 
-        for (int h = 0; h < height; h++) {
-            for (int w = 0; w < width; w++) {
-                if (!maze[w, h] && Random.value < density)
+        float counter = 0;
+
+        for (int h = 2; h < height-2; h++) {
+            for (int w = 2; w < width-2; w++) {
+                counter += Random.Range(-1,2) * 0.5f + 1.0f;
+                if (!maze[w, h] && counter % (1/density) < 1) {
                     Instantiate(obstaclePrefabs[Random.Range(0, obstaclePrefabs.Length)], new Vector3(w - width/2, 0, h - height/2) * spread, Quaternion.identity, obstacleHolder.transform);
+                }
             }
         }
     }

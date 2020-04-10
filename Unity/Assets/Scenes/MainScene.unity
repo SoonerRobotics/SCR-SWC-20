@@ -172,12 +172,12 @@ MonoBehaviour:
   - {fileID: 510538099432521406, guid: d11cee11ba864484fb0f8e57b8efc5b5, type: 3}
   waypointPrefab: {fileID: 5216091860525757151, guid: ff26faa179beeaf43b9361021ef297a9,
     type: 3}
-  height: 57
-  width: 117
-  spread: 2.5
+  height: 66
+  width: 100
+  spread: 2
   density: 0.35
   seed: 0
-  freeArea: 2
+  freeArea: 1
 --- !u!1 &360597449
 GameObject:
   m_ObjectHideFlags: 0
