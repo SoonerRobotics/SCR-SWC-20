@@ -79,8 +79,7 @@ public class GameManager : MonoBehaviour
 
         waypoints.Add(new Vector2(-37, 0)); // Start Pos
 
-        if (ConfigLoader.simulator.Seed != -1)
-            Random.InitState(ConfigLoader.simulator.Seed);
+        Random.InitState(ConfigLoader.simulator.Seed);
 
         waypoints.Add(new Vector2(Random.Range(-20, -5), Random.Range(-10, 10)));
         waypoints.Add(new Vector2(Random.Range(0, 15), Random.Range(-20, 20)));
@@ -98,7 +97,6 @@ public class GameManager : MonoBehaviour
         {
             if (ConfigLoader.simulator.CompetitionMode) {
                 StopSim("Connection to RosBridge lost!");
-                State = GameState.QUITTING;
             } else {
                 ReloadSim();
             }
@@ -115,7 +113,6 @@ public class GameManager : MonoBehaviour
         if (State == GameState.PLAYING && ConfigLoader.simulator.CompetitionMode && Time.time - startTime >= maxTime)
         {
             StopSim(null);
-            State = GameState.QUITTING;
         }
     }
 
@@ -177,6 +174,10 @@ public class GameManager : MonoBehaviour
 
     public void StopSim(string error)
     {
+        if (State == GameState.QUITTING) {
+            return; // Already quitting
+        }
+        State = GameState.QUITTING;
         float finalTime = Time.time - startTime;
 
         if (finalTime > maxTime) {

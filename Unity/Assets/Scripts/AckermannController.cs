@@ -19,10 +19,10 @@ public class AckermannController : MonoBehaviour
     public GameObject robotCamera;
 
     [Range(0.0F, 1.0F)]
-    public float drag = 0.85f;
+    private float drag = 0.85f;
 
-    public float L = 0.7f;
-    public float T = 0.6f;
+    private float L = 0.3f;
+    private float T = 0.26f;
 
     [Range(0.0F, 10.0F)]
     public float ManualTopSpeed = 1.0f;
@@ -55,6 +55,9 @@ public class AckermannController : MonoBehaviour
         }
 
         rb = GetComponent<Rigidbody>();
+        rb.centerOfMass = new Vector3(0,0,0);
+        rb.inertiaTensorRotation = Quaternion.identity;
+        rb.maxAngularVelocity = 100f;
     }
 
     // Update is called once per frame
@@ -92,9 +95,11 @@ public class AckermannController : MonoBehaviour
         accel = (new_linear_vel - linear_vel) / Time.fixedDeltaTime;
 
         linear_vel = new_linear_vel;
-        transform.Translate(linear_vel * Time.fixedDeltaTime, Space.World);
+        //transform.Translate(linear_vel * Time.fixedDeltaTime, Space.World);
+        rb.velocity = linear_vel;
 
         angular_vel = new Vector3(0, Power / L * Mathf.Tan(radAngle), 0);
-        transform.Rotate(angular_vel * Mathf.Rad2Deg * Time.fixedDeltaTime, Space.World);
+        // transform.Rotate(angular_vel * Mathf.Rad2Deg * Time.fixedDeltaTime, Space.World);
+        rb.angularVelocity = angular_vel;
     }
 }

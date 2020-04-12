@@ -42,13 +42,12 @@ public class FieldBuilder : MonoBehaviour
     void Start()
     {
 
-        GameObject waypointHolder = new GameObject("Waypoints");;
+        GameObject waypointHolder = new GameObject("Waypoints");
 
         bool[,] maze;
         HashSet<(int, int)> frontier;
 
-        if (ConfigLoader.simulator.Seed != -1)
-            Random.InitState(ConfigLoader.simulator.Seed);
+        Random.InitState(ConfigLoader.simulator.Seed);
 
         Vector2[] waypoints = GameManager.instance.GetWaypoints();
 

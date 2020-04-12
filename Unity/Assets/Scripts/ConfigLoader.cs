@@ -49,6 +49,10 @@ public class ConfigLoader
             simulator.ManualControl = false;
         }
 
+        if (simulator.Seed == -1) {
+            simulator.Seed = UnityEngine.Random.Range(0, int.MaxValue);
+        }
+
         // Load competition.cfg
         try
         {

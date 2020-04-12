@@ -12,6 +12,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.swc_msgs
 
         private bool firstMessage = true;
         private bool begingame = false;
+        private float startTime = 100000;
 
         protected override void Start()
         {
@@ -31,14 +32,24 @@ namespace RosSharp.RosBridgeClient.MessageTypes.swc_msgs
 
             base.Start();
             car = GetComponent<AckermannController>();
+            startTime = Time.realtimeSinceStartup;
+
+            if (!ConfigLoader.simulator.CompetitionMode) {
+                // Don't care about the stopsim stuff
+                begingame = false;
+                firstMessage = false;
+                GameManager.instance.StartSim();
+            }
         }
 
-        private void Update()
-        {
+        private void FixedUpdate() {
             if (begingame)
             {
-                GameManager.instance.StartSim();
                 begingame = false;
+                GameManager.instance.StartSim();
+            }
+            if (firstMessage && !begingame && Time.realtimeSinceStartup - startTime >= 30) {
+                GameManager.instance.StopSim("Did not start in 30 seconds!");
             }
         }
 

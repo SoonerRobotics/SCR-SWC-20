@@ -170,6 +170,7 @@ MonoBehaviour:
   - {fileID: 1923489091770420782, guid: 206c202f5305ed547acd125cc0ff283b, type: 3}
   - {fileID: 3099440550098806083, guid: 38e6276f7bdfc8a4f97f931161c8351d, type: 3}
   - {fileID: 510538099432521406, guid: d11cee11ba864484fb0f8e57b8efc5b5, type: 3}
+  - {fileID: 3099440550098806083, guid: 1db2593c3c7bc054886d1d97877d85ab, type: 3}
   waypointPrefab: {fileID: 5216091860525757151, guid: ff26faa179beeaf43b9361021ef297a9,
     type: 3}
   height: 66
@@ -724,9 +725,6 @@ MonoBehaviour:
   rightWheel: {fileID: 1857142558}
   frontAxleTf: {fileID: 360597449}
   robotCamera: {fileID: 1822220454}
-  drag: 0.85
-  L: 0.3
-  T: 0.26
   ManualTopSpeed: 1
   CntrlAngle: 0
   CntrlPower: 0
@@ -824,14 +822,14 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 829615084}
   serializedVersion: 2
-  m_Mass: 5
+  m_Mass: 2
   m_Drag: 0
   m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 3
 --- !u!153 &829615094
 ConfigurableJoint:
   m_ObjectHideFlags: 0
