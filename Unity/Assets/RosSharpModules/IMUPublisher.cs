@@ -7,14 +7,14 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
     {
         private Imu message;
 
-        public float accelNoiseStdDev = 0.15f;
-        public float orientationNoiseStdDev = 0.017f;
-        public float angularVelocityNoiseStdDev = 0.017f;
+        private float accelNoiseStdDev = 0.15f;
+        private float orientationNoiseStdDev = 0.017f;
+        private float angularVelocityNoiseStdDev = 0.017f;
 
         private AckermannController c;
 
         private float previousScanTime = 0;
-        public float updatePeriod = 0.1f;
+        private float updatePeriod = 0.1f;
 
         protected override void Start()
         {

@@ -178,6 +178,50 @@ MonoBehaviour:
   density: 0.35
   seed: 0
   freeArea: 1
+--- !u!1 &215013118
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 215013119}
+  - component: {fileID: 215013120}
+  m_Layer: 0
+  m_Name: FrontBumper
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &215013119
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 215013118}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 829615085}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &215013120
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 215013118}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.18, y: 0.1, z: 0.3}
+  m_Center: {x: 0.38, y: 0.15, z: 0}
 --- !u!1 &360597449
 GameObject:
   m_ObjectHideFlags: 0
@@ -627,6 +671,8 @@ GameObject:
   - component: {fileID: 829615087}
   - component: {fileID: 829615089}
   - component: {fileID: 829615090}
+  - component: {fileID: 829615096}
+  - component: {fileID: 829615095}
   - component: {fileID: 829615092}
   - component: {fileID: 829615091}
   - component: {fileID: 829615093}
@@ -658,6 +704,7 @@ Transform:
   - {fileID: 688134255}
   - {fileID: 1065359072}
   - {fileID: 952696888}
+  - {fileID: 215013119}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -725,10 +772,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Topic: /sim/imu
-  accelNoiseStdDev: 0.15
-  orientationNoiseStdDev: 0.017
-  angularVelocityNoiseStdDev: 0.017
-  updatePeriod: 0.04
 --- !u!114 &829615090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -742,11 +785,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Topic: /sim/gps
-  latNoiseStdDev: 1.843
-  lonNoiseStdDev: 2.138
-  lat0Pos: 35.205853
-  lon0Pos: -97.44232
-  updatePeriod: 0.1
 --- !u!114 &829615091
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -889,6 +927,32 @@ ConfigurableJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!114 &829615095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 829615084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6754bb5aaed72614b8f93c1d3ff3a992, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Topic: /sim/bumper
+--- !u!114 &829615096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 829615084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5970dc0eb3926240b605e471f7eeced, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Topic: /sim/velocity
 --- !u!1 &874833490
 GameObject:
   m_ObjectHideFlags: 0
@@ -1078,7 +1142,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   samples: 360
-  update_rate: 3600
+  update_rate: 7200
   angle_min: 0
   angle_max: 6.28
   angle_increment: 0.0174533

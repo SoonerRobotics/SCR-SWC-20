@@ -6,14 +6,14 @@ namespace RosSharp.RosBridgeClient.MessageTypes.swc_msgs
     {
         private Gps message;
 
-        public float latNoiseStdDev = 1.843f;
-        public float lonNoiseStdDev = 2.138f;
+        private float latNoiseStdDev = 1.843f;
+        private float lonNoiseStdDev = 2.138f;
 
-        public float lat0Pos = 35.205853f;
-        public float lon0Pos = -97.442325f;
+        private float lat0Pos = 35.205853f;
+        private float lon0Pos = -97.442325f;
 
         private float previousScanTime = 5;
-        public float updatePeriod = 0.1f;
+        private float updatePeriod = 0.1f;
 
         protected override void Start()
         {

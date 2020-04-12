@@ -113,27 +113,27 @@ public class ConfigLoader
         public float getObstacleScore() {
             switch (Obstacles) {
                 case ObstacleTypes.none:
-                    return 8.0f;
+                    return 15.0f;
                 case ObstacleTypes.normal:
                     return 1.0f;
                 case ObstacleTypes.hard:
-                    return 0.4f;
+                    return 0.1f;
             }
 
-            return 10f; // if error, assume they're cheating
+            return 100f; // if error, assume they're cheating
         }
 
         public float getNoiseScore() {
             switch (NoiseLevel) {
                 case NoiseLevels.none:
-                    return 8.0f;
+                    return 10.0f;
                 case NoiseLevels.reduced:
                     return 1.0f;
                 case NoiseLevels.realistic:
                     return 0.6f;
             }
 
-            return 10f; // if error, assume they're cheating
+            return 100f; // if error, assume they're cheating
         }
     }
 

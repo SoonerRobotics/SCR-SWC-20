@@ -193,11 +193,25 @@ public class GameManager : MonoBehaviour
             Application.Quit();
         }
 
-        writer.WriteLine(finalTime);
+        float scoreMultiplier = 1f;
 
         foreach (ScoreAdjust score in adjustments)
         {
-            writer.WriteLine(score.adjustment + ": " + score.reason);
+            scoreMultiplier *= score.adjustment;
+        }
+
+        writer.WriteLine($"Team {ConfigLoader.competition.Name}");
+        writer.WriteLine($"Date: {System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss zz")}");
+        writer.WriteLine($"Seed: {ConfigLoader.simulator.Seed}");
+        writer.WriteLine();
+        writer.WriteLine($"Time: {finalTime:0.000}");
+        writer.WriteLine($"Multiplier: x{scoreMultiplier:0.000}");
+        writer.WriteLine($"Score: {(finalTime * scoreMultiplier):0.000}");
+        writer.WriteLine();
+        writer.WriteLine("-- Multipliers --");
+        foreach (ScoreAdjust score in adjustments)
+        {
+            writer.WriteLine($"{score.reason}: x{score.adjustment:0.00}");
         }
 
         writer.Close();
