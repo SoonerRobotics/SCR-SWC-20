@@ -1158,7 +1158,7 @@ MonoBehaviour:
   time_increment: 0
   scan_time: 0
   range_min: 0.12
-  range_max: 3.5
+  range_max: 10
   ranges: []
   intensities: []
 --- !u!23 &952696886
