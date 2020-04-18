@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using RosSharp.RosBridgeClient;
 using UnityEngine;
 
@@ -18,8 +19,8 @@ public class AckermannController : MonoBehaviour
     public GameObject frontAxleTf;
     public GameObject robotCamera;
 
-    [Range(0.0F, 1.0F)]
-    private float drag = 0.85f;
+    private float turnDrag = 0.8f;
+    private float maxAccel = 20.0f;
 
     private float L = 0.3f;
     private float T = 0.26f;
@@ -30,9 +31,8 @@ public class AckermannController : MonoBehaviour
     public float Angle { get; private set; }
     public float Power { get; private set; }
 
-    [Range(-30.0F, 30.0F)]
-    public float CntrlAngle = 0;
-    public float CntrlPower = 0;
+    public float CntrlAngle { get; private set; } = 0;
+    public float CntrlPower { get; private set; } = 0;
 
     public Vector3 linear_vel { get; private set; } = new Vector3();
     public Vector3 angular_vel { get; private set; } = new Vector3();
@@ -56,24 +56,32 @@ public class AckermannController : MonoBehaviour
 
         rb = GetComponent<Rigidbody>();
         rb.centerOfMass = new Vector3(0,0,0);
+        rb.inertiaTensor = new Vector3(100,100,100);
         rb.inertiaTensorRotation = Quaternion.identity;
         rb.maxAngularVelocity = 100f;
+
+        maxAccel *= Time.fixedDeltaTime;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!ConfigLoader.simulator.ManualControl)
-            return;
+        if (ConfigLoader.simulator.ManualControl) {
+            CntrlPower = Input.GetAxis("Speed") * ManualTopSpeed;
+            CntrlAngle = Input.GetAxis("Angle") * 20;
+        }
+    }
 
-        CntrlPower = Input.GetAxis("Speed") * ManualTopSpeed;
-        CntrlAngle = Input.GetAxis("Angle") * 20;
+    public void SetControl(float power, float angle) {
+        CntrlPower = power;
+        CntrlAngle = angle;
     }
 
     private void FixedUpdate()
     {
-        Angle += (1.0f - drag) * (CntrlAngle - Angle);
-        Power += (1.0f - drag) * (CntrlPower - Power);
+
+        Angle += (1.0f - turnDrag) * (CntrlAngle - Angle);
+        Power += Mathf.Clamp(CntrlPower - Power, -maxAccel, maxAccel);
 
         Angle = Mathf.Clamp(Angle, -30, 30);
         Power = Mathf.Clamp(Power, -8, 8);
@@ -97,6 +105,7 @@ public class AckermannController : MonoBehaviour
         linear_vel = new_linear_vel;
         //transform.Translate(linear_vel * Time.fixedDeltaTime, Space.World);
         rb.velocity = linear_vel;
+        //rb.MovePosition(rb.position + linear_vel * Time.fixedDeltaTime);
 
         angular_vel = new Vector3(0, Power / L * Mathf.Tan(radAngle), 0);
         // transform.Rotate(angular_vel * Mathf.Rad2Deg * Time.fixedDeltaTime, Space.World);

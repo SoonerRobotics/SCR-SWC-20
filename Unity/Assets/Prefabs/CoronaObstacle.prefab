@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6420280404981083013}
   m_Layer: 0
   m_Name: CoronaObstacle
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -60,7 +60,7 @@ GameObject:
   - component: {fileID: 7705045784659795140}
   m_Layer: 0
   m_Name: Sphere
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -212,6 +212,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_StaticEditorFlags
       value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 245cb1e3f7a32524aa3b4d54daf4357d,
+        type: 3}
+      propertyPath: m_TagString
+      value: Obstacle
       objectReference: {fileID: 0}
     - target: {fileID: 2534866581884222612, guid: 245cb1e3f7a32524aa3b4d54daf4357d,
         type: 3}

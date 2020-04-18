@@ -1,4 +1,5 @@
 ﻿using RosSharp.RosBridgeClient;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using TMPro;
@@ -22,6 +23,9 @@ public class GameManager : MonoBehaviour
     private List<Vector2> waypoints = new List<Vector2>();
 
     private RosConnector rosConnector;
+
+    private static float maxHealth = 100f;
+    private float currentHealth = maxHealth;
 
     public enum GameState
     {
@@ -79,11 +83,11 @@ public class GameManager : MonoBehaviour
 
         waypoints.Add(new Vector2(-37, 0)); // Start Pos
 
-        Random.InitState(ConfigLoader.simulator.Seed);
+        UnityEngine.Random.InitState(ConfigLoader.simulator.Seed);
 
-        waypoints.Add(new Vector2(Random.Range(-20, -5), Random.Range(-10, 10)));
-        waypoints.Add(new Vector2(Random.Range(0, 15), Random.Range(-20, 20)));
-        waypoints.Add(new Vector2(Random.Range(20, 35), Random.Range(-15, 15)));
+        waypoints.Add(new Vector2(UnityEngine.Random.Range(-20, -5), UnityEngine.Random.Range(-10, 10)));
+        waypoints.Add(new Vector2(UnityEngine.Random.Range(0, 15), UnityEngine.Random.Range(-20, 20)));
+        waypoints.Add(new Vector2(UnityEngine.Random.Range(20, 35), UnityEngine.Random.Range(-15, 15)));
 
         waypoints.Add(new Vector2(48, 15)); // Goal Pos
 
@@ -112,6 +116,22 @@ public class GameManager : MonoBehaviour
         // Time limit reached
         if (State == GameState.PLAYING && ConfigLoader.simulator.CompetitionMode && Time.time - startTime >= maxTime)
         {
+            StopSim(null);
+        }
+    }
+
+    internal void TakeDamage(float damage)
+    {
+        if (State != GameState.PLAYING) {
+            return;
+        }
+        
+        currentHealth -= damage;
+
+        Debug.Log(currentHealth);
+
+        if (ConfigLoader.simulator.CompetitionMode && currentHealth <= 0) {
+            currentHealth = 0;
             StopSim(null);
         }
     }
@@ -177,14 +197,29 @@ public class GameManager : MonoBehaviour
         if (State == GameState.QUITTING) {
             return; // Already quitting
         }
+
+        Debug.Log("Job's done!");
+        
         State = GameState.QUITTING;
         float finalTime = Time.time - startTime;
 
-        if (finalTime > maxTime) {
+        if (finalTime > maxTime || currentHealth == 0) {
             finalTime = maxTime;
         }
 
-        Debug.Log("Job's done!");
+        float damageTaken = maxHealth - currentHealth;
+
+        ScoreAdjust damageScore = new ScoreAdjust();
+        if (currentHealth > 0) {
+            damageScore.adjustment = 1.0f + damageTaken * (9.0f/100.0f);
+            damageScore.reason = $"{(int)damageTaken}% Damaged";
+        } else {
+            damageScore.adjustment = 100.0f;
+            damageScore.reason = "Robot Destroyed";
+        }
+
+        if (currentHealth < maxHealth)
+            adjustments.Add(damageScore);
 
         StreamWriter writer = new StreamWriter("results.txt");
 

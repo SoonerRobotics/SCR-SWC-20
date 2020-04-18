@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Threading;
+using UnityEngine;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.swc_msgs
 {
@@ -7,17 +8,26 @@ namespace RosSharp.RosBridgeClient.MessageTypes.swc_msgs
     {
         private AckermannController car;
 
+        private Control lastMessage;
+
         private float angleNoiseStdDev = 0.4f;
         private float powerNoiseStdDev = 0.1f;
 
         private bool firstMessage = true;
         private bool begingame = false;
+        private bool newMessage = false;
         private float startTime = 100000;
 
         protected override void Start()
         {
-            if (ConfigLoader.simulator.ManualControl)
-                return;
+            base.Start();
+            car = GetComponent<AckermannController>();
+            lastMessage = new Control();
+            startTime = Time.realtimeSinceStartup;
+
+            if (ConfigLoader.simulator.ManualControl) {
+                this.enabled = false;
+            }
 
             switch (ConfigLoader.competition.NoiseLevel) {
                 case ConfigLoader.CompetitionConfig.NoiseLevels.none:
@@ -30,10 +40,6 @@ namespace RosSharp.RosBridgeClient.MessageTypes.swc_msgs
                     break;
             }
 
-            base.Start();
-            car = GetComponent<AckermannController>();
-            startTime = Time.realtimeSinceStartup;
-
             if (!ConfigLoader.simulator.CompetitionMode) {
                 // Don't care about the stopsim stuff
                 begingame = false;
@@ -43,11 +49,17 @@ namespace RosSharp.RosBridgeClient.MessageTypes.swc_msgs
         }
 
         private void FixedUpdate() {
+            if (newMessage) {
+                car.SetControl(lastMessage.speed + SimUtils.getRandNormal(0, powerNoiseStdDev), lastMessage.turn_angle + SimUtils.getRandNormal(0, angleNoiseStdDev));
+                newMessage = false;
+            }
+
             if (begingame)
             {
                 begingame = false;
                 GameManager.instance.StartSim();
             }
+
             if (firstMessage && !begingame && Time.realtimeSinceStartup - startTime >= 30) {
                 GameManager.instance.StopSim("Did not start in 30 seconds!");
             }
@@ -55,8 +67,8 @@ namespace RosSharp.RosBridgeClient.MessageTypes.swc_msgs
 
         protected override void ReceiveMessage(Control control)
         {
-            car.CntrlAngle = control.turn_angle + SimUtils.getRandNormal(0, angleNoiseStdDev);
-            car.CntrlPower = control.speed + SimUtils.getRandNormal(0, powerNoiseStdDev);
+            lastMessage = control;
+            newMessage = true;
 
             if (firstMessage)
             {
