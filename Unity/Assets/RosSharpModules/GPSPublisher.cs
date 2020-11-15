@@ -15,6 +15,8 @@ namespace RosSharp.RosBridgeClient.MessageTypes.swc_msgs
         private float previousScanTime = 5;
         private float updatePeriod = 0.1f;
 
+        public bool noNoiseOverride = false;
+
         protected override void Start()
         {
             base.Start();
@@ -29,6 +31,11 @@ namespace RosSharp.RosBridgeClient.MessageTypes.swc_msgs
                     latNoiseStdDev *= 0.5f;
                     lonNoiseStdDev *= 0.5f;
                     break;
+            }
+
+            if (noNoiseOverride) {
+                latNoiseStdDev = 0;
+                lonNoiseStdDev = 0;
             }
         }
 

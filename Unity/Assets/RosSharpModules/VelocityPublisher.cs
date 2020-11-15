@@ -13,6 +13,8 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
         private float updatePeriod = 0.05f;
         private AckermannController c;
 
+        public bool noNoiseOverride = false;
+
         protected override void Start()
         {
             base.Start();
@@ -26,6 +28,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
                 case ConfigLoader.CompetitionConfig.NoiseLevels.reduced:
                     velocityNoiseStdDev *= 0.5f;
                     break;
+            }
+
+            if (noNoiseOverride) {
+                velocityNoiseStdDev = 0;
             }
         }
 
