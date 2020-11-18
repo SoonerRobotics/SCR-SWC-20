@@ -675,6 +675,8 @@ GameObject:
   - component: {fileID: 829615099}
   - component: {fileID: 829615096}
   - component: {fileID: 829615097}
+  - component: {fileID: 829615101}
+  - component: {fileID: 829615100}
   - component: {fileID: 829615095}
   - component: {fileID: 829615092}
   - component: {fileID: 829615091}
@@ -995,6 +997,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Topic: /truth/gps
   noNoiseOverride: 1
+--- !u!114 &829615100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 829615084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d053faad01c76040ae69950cff1fa28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Topic: /truth/linear_velocity
+  noNoiseOverride: 1
+--- !u!114 &829615101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 829615084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d053faad01c76040ae69950cff1fa28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Topic: /sim/linear_velocity
+  noNoiseOverride: 0
 --- !u!1 &874833490
 GameObject:
   m_ObjectHideFlags: 0

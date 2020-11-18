@@ -81,6 +81,8 @@ public class GameManager : MonoBehaviour
 
         maxTime = ConfigLoader.simulator.MaxTime;
 
+        UnityEngine.Time.timeScale = ConfigLoader.simulator.TimeScale;
+
         waypoints.Add(new Vector2(-37, 0)); // Start Pos
 
         UnityEngine.Random.InitState(ConfigLoader.simulator.Seed);

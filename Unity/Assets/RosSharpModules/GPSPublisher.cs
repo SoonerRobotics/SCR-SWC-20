@@ -41,10 +41,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.swc_msgs
 
         private void FixedUpdate()
         {
-            if (Time.realtimeSinceStartup >= previousScanTime + updatePeriod)
+            if (UnityEngine.Time.time >= previousScanTime + updatePeriod)
             {
                 WriteMessage();
-                previousScanTime = Time.realtimeSinceStartup;
+                previousScanTime = UnityEngine.Time.time;
             }
         }
 

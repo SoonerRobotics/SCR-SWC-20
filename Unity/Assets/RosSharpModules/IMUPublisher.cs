@@ -38,10 +38,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 
         private void FixedUpdate()
         {
-            if (Time.realtimeSinceStartup >= previousScanTime + updatePeriod)
+            if (UnityEngine.Time.time >= previousScanTime + updatePeriod)
             {
                 WriteMessage();
-                previousScanTime = Time.realtimeSinceStartup;
+                previousScanTime = UnityEngine.Time.time;
             }
         }
 

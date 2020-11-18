@@ -35,6 +35,7 @@ public class ConfigLoader
             simulator.ManualTopSpeed = cfg["Simulator"]["ManualTopSpeed"].FloatValue;
             simulator.RosBridgeServerUrl = cfg["Simulator"]["RosBridgeUrl"].StringValue;
             simulator.Seed = cfg["Simulator"]["Seed"].IntValue;
+            simulator.TimeScale = cfg["Simulator"]["TimeScale"].FloatValue;
 
             simulator.CompetitionMode = cfg["Competition"]["CompetitionMode"].BoolValue;
             simulator.MaxTime = cfg["Competition"]["MaxTime"].FloatValue;
@@ -102,6 +103,7 @@ public class ConfigLoader
         public int Seed = -1;
 
         public float MaxTime = 300f;
+        public float TimeScale = 1.0f;
     }
 
     public class CompetitionConfig
